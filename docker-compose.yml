@@ -5,6 +5,8 @@ services:
       POSTGRES_DB: ${POSTGRES_DB}
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - ./data:/var/lib/postgresql/data
   web:
     restart: always
     env_file: .env
@@ -12,13 +14,14 @@ services:
       - DJANGO_SECRET_KEY=${SECRET_KEY}
     image: web
     build: 
-      context: ./
+      context: ./api
     command: >
       bash -c "python wait_for_postgres.py &&
-               ./manage.py migrate &&
-               ./manage.py runserver 0.0.0.0:8000"
+        ./manage.py migrate &&
+        ./manage.py collectstatic --noinput &&
+        ./manage.py runserver --insecure 0.0.0.0:8000"
     volumes:
-      - ./:/code
+      - ./api:/api
     ports:
       - "8000:8000"
     depends_on:
