@@ -1,5 +1,3 @@
-version: '2'
-
 services:
   postgres:
     image: postgres:latest
@@ -13,7 +11,8 @@ services:
     environment:
       - DJANGO_SECRET_KEY=${SECRET_KEY}
     image: web
-    build: ./
+    build: 
+      context: ./
     command: >
       bash -c "python wait_for_postgres.py &&
                ./manage.py migrate &&
@@ -25,10 +24,11 @@ services:
     depends_on:
       - postgres
   documentation:
+    image: minidocks/mkdocs:latest
     restart: always
-    build: ./
     command: "mkdocs serve"
     volumes:
-      - ./:/code
+      - ./documentation:/code
+    working_dir: /code
     ports:
       - "8010:8010"

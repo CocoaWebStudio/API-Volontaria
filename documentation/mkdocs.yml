@@ -4,7 +4,7 @@ repo_name: volontaria/API-Volontaria
 repo_url: https://github.com/volontaria/API-Volontaria
 site_dir: site
 copyright: Copyright &copy; 2020, <a href="https://volontaria.github.io/">Volontaria</a>.
-dev_addr: 0.0.0.0:8001
+dev_addr: 0.0.0.0:8010
 edit_uri: ''
 nav:
   - Home: 'index.md'
