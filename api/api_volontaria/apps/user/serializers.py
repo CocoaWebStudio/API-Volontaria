@@ -6,7 +6,7 @@ from django.contrib.auth.models import Permission
 from django.core.exceptions import ValidationError, ObjectDoesNotExist
 from django.contrib.auth import authenticate
 from django.db.models.fields import DurationField
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 
 from rest_framework.settings import api_settings
 

@@ -4,7 +4,7 @@ import os
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 
 from api_volontaria.apps.user.managers import UserManager, ActionTokenManager
 from django.utils import timezone

@@ -2,4 +2,5 @@ from django.apps import AppConfig
 
 
 class PageConfig(AppConfig):
-    name = 'page'
+    name = 'api_volontaria.apps.page'
+    verbose_name = 'page'

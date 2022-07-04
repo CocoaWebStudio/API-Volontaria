@@ -27,8 +27,7 @@ SECRET_KEY = config('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config('DEBUG', default=False, cast=bool)
 
-ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='localhost', cast=Csv())
-
+ALLOWED_HOSTS = config('ALLOWED_HOSTS').split()
 
 # Application definition
 
@@ -52,7 +51,6 @@ INSTALLED_APPS = [
     'api_volontaria',
     'api_volontaria.apps.user',
     'api_volontaria.apps.notification',
-    'anymail',
     'import_export',
     'simple_history',
     'dry_rest_permissions',
@@ -62,6 +60,7 @@ INSTALLED_APPS = [
     'api_volontaria.apps.position',
     'django_filters',
     'djmoney',
+    'ckeditor'
 ]
 
 MIDDLEWARE = [
@@ -216,39 +215,23 @@ ACTIVATION_TOKENS = {
     'MINUTES': 2880,
 }
 
-ANYMAIL = {
-    'SENDINBLUE_API_KEY':
-    config('SENDINBLUE_API_KEY', default='placeholder_key'),
-    'REQUESTS_TIMEOUT': (30, 30),
-    'TEMPLATES': {
-        'CONFIRMATION_PARTICIPATION': config(
-            'TEMPLATE_ID_CONFIRMATION_PARTICIPATION',
-            default=0,
-            cast=int
-        ),
-        'CANCELLATION_PARTICIPATION_EMERGENCY': config(
-            'TEMPLATE_ID_CANCELLATION_PARTICIPATION_EMERGENCY',
-            default=0,
-            cast=int
-        ),
-        'RESET_PASSWORD': config(
-            'RESET_PASSWORD_EMAIL_TEMPLATE',
-            default=0
-        ),
-    }
-}
+EMAIL_HOST = config('EMAIL_HOST', default='placeholder_key')
+EMAIL_PORT = config('EMAIL_PORT', default='placeholder_key')
+EMAIL_HOST_USER = config('EMAIL_HOST_USER', default='placeholder_key')
+EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD', default='placeholder_key')
+EMAIL_USE_TLS = config('EMAIL_USE_TLS', default='placeholder_key')
 
-EMAIL_BACKEND = 'anymail.backends.sendinblue.EmailBackend'
-DEFAULT_FROM_EMAIL = 'noreply@example.org'
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+DEFAULT_FROM_EMAIL = 'info@pureconnexion.org'
 
 # User specific settings
 LOCAL_SETTINGS = {
     'ORGANIZATION': config(
         'ORGANIZATION',
-        default='Volontaria'),
+        default='Pure Connexion'),
     'CONTACT_EMAIL': config(
             'CONTACT_EMAIL',
-            default='noreply@volontaria.org',
+            default='info@pureconnexion.org',
     ),
     'EMAIL_SERVICE': config(
         'EMAIL_SERVICE',

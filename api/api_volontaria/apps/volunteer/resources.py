@@ -1,6 +1,6 @@
 # app/admin.py
 
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 
 from import_export import resources
 from import_export.fields import Field

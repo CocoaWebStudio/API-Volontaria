@@ -3,7 +3,7 @@ from django.contrib.auth import get_user_model
 from django.conf import settings
 from django.http import Http404
 from django.core.exceptions import ValidationError
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from django.db.models.query import QuerySet
 
 from rest_framework import mixins, status, viewsets

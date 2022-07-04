@@ -4,7 +4,7 @@ from django.db import models
 from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_encode
 
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from django.conf import settings
 from api_volontaria import front_end_url
 from api_volontaria.email import EmailAPI
