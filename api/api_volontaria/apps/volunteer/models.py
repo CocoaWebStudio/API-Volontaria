@@ -1,3 +1,4 @@
+import sys
 from datetime import datetime, timedelta
 import pytz
 from babel.dates import format_date
@@ -33,6 +34,7 @@ class Cell(models.Model):
     address_line_1 = models.CharField(
         max_length=100,
         verbose_name=_("Address line 1"),
+        blank=True,
     )
 
     address_line_2 = models.CharField(
@@ -45,25 +47,29 @@ class Cell(models.Model):
     postal_code = models.CharField(
         max_length=10,
         verbose_name=_("Postal code"),
+        blank=True,
     )
 
     state_province = models.CharField(
         max_length=100,
         verbose_name=_("State/Province"),
+        blank=True,
     )
 
     city = models.CharField(
         max_length=50,
-        blank=False,
+        blank=True,
         verbose_name=_("City"),
     )
 
     latitude = models.FloatField(
         verbose_name=_("Latitude"),
+        blank=True,
     )
 
     longitude = models.FloatField(
         verbose_name=_("Longitude"),
+        blank=True,
     )
 
     def __str__(self):
@@ -161,6 +167,20 @@ class Event(models.Model):
         verbose_name = _("Event")
         verbose_name_plural = _('Events')
 
+    cell = models.ForeignKey(
+        Cell,
+        verbose_name=_("Place"),
+        blank=False,
+        on_delete=models.CASCADE,
+    )
+
+    task_type = models.ForeignKey(
+        TaskType,
+        verbose_name="Task type",
+        blank=False,
+        on_delete=models.PROTECT,
+    )
+
     description = models.TextField(
         verbose_name="Description",
     )
@@ -189,20 +209,6 @@ class Event(models.Model):
         related_name="events",
         blank=True,
         through='Participation',
-    )
-
-    cell = models.ForeignKey(
-        Cell,
-        verbose_name=_("Cell"),
-        blank=False,
-        on_delete=models.CASCADE,
-    )
-
-    task_type = models.ForeignKey(
-        TaskType,
-        verbose_name="Task type",
-        blank=False,
-        on_delete=models.PROTECT,
     )
 
     def __str__(self):
@@ -341,69 +347,53 @@ class Participation(models.Model):
     )
 
     def send_email_confirmation(self):
-        start_time = self.event.start_time
-        start_time = start_time.astimezone(pytz.timezone('US/Eastern'))
+        try:
+            start_time = self.event.start_time
+            start_time = start_time.astimezone(pytz.timezone('US/Eastern'))
 
-        end_time = self.event.end_time
-        end_time = end_time.astimezone(pytz.timezone('US/Eastern'))
+            end_time = self.event.end_time
+            end_time = end_time.astimezone(pytz.timezone('US/Eastern'))
 
-        type_participation = 'Bénévole'
-        if self.is_standby:
-            type_participation = 'Remplaçant'
+            type_participation = 'Bénévole'
+            if self.is_standby:
+                type_participation = 'Remplaçant'
 
-        context = {
-            'PARTICIPATION': {
-                'FIRST_NAME': self.user.first_name,
-                'LAST_NAME': self.user.last_name,
-                'TYPE': type_participation
-            },
-            'ACTIVITY': {
-                'NAME': self.event.task_type.name,
-                'START_DATE': format_date(
-                    start_time,
-                    format='long',
-                    locale='fr'
-                ),
-                'START_TIME': start_time.strftime('%-Hh%M'),
-                'END_TIME': end_time.strftime('%-Hh%M'),
-            },
-            'CELL': {
-                'NAME': self.event.cell.name,
-                'ADDRESS_LINE_1': self.event.cell.address_line_1,
-                'ADDRESS_LINE_2': self.event.cell.address_line_2,
-                'POSTAL_CODE': self.event.cell.postal_code,
-                'CITY': self.event.cell.city,
-                'STATE_PROVINCE': self.event.cell.state_province,
-            },
-            'ORGANIZATION_NAME': settings.LOCAL_SETTINGS['ORGANIZATION'],
-        }
+            context = {
+                'PARTICIPATION': {
+                    'FIRST_NAME': self.user.first_name,
+                    'LAST_NAME': self.user.last_name,
+                    'TYPE': type_participation
+                },
+                'ACTIVITY': {
+                    'NAME': self.event.task_type.name,
+                    'START_DATE': format_date(
+                        start_time,
+                        format='long',
+                        locale='fr'
+                    ),
+                    'START_TIME': start_time.strftime('%-Hh%M'),
+                    'END_TIME': end_time.strftime('%-Hh%M'),
+                },
+                'CELL': {
+                    'NAME': self.event.cell.name,
+                    'ADDRESS_LINE_1': self.event.cell.address_line_1,
+                    'ADDRESS_LINE_2': self.event.cell.address_line_2,
+                    'POSTAL_CODE': self.event.cell.postal_code,
+                    'CITY': self.event.cell.city,
+                    'STATE_PROVINCE': self.event.cell.state_province,
+                },
+                'ORGANIZATION_NAME': settings.LOCAL_SETTINGS['ORGANIZATION'],
+            }
 
-        TEMPLATES = settings.ANYMAIL.get('TEMPLATES')
-        id = TEMPLATES.get('CONFIRMATION_PARTICIPATION')
-        if id:
             EmailAPI().send_template_email(
                 self.user.email,
-                'CONFIRMATION_PARTICIPATION',
+                "Confirmation de participation en Pureconnexion.org",
+                'participation_confirmation_email',
                 context,
             )
-        else:
-            msg_file_name = 'participation_confirmation_email'
-            plain_msg = render_to_string(
-                '.'.join([msg_file_name, 'txt']),
-                context
-            )
-            msg_html = render_to_string(
-                '.'.join([msg_file_name, 'html']),
-                context
-            )
-
-            EmailAPI().send_email(
-                "Objet: Confirmation de participation",
-                plain_msg,
-                "email_from@mondomain.ca",
-                [self.user.email],
-                html_message=msg_html,
-            )
+        except: # catch *all* exceptions
+            e = sys.exc_info()[0]
+            print( "<p>Error: %s</p>" % e )
 
     def send_email_cancellation_emergency(self):
         """
