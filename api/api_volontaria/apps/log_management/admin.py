@@ -35,7 +35,6 @@ class EmailLogAdmin(admin.ModelAdmin):
         'id',
         'user_email',
         'type_email',
-        'template_id',
         'nb_email_sent',
         'created',
     )
