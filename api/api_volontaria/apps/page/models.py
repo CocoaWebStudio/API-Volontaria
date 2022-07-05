@@ -1,5 +1,5 @@
 from django.db import models
-from ckeditor.fields import RichTextField
+from ckeditor_uploader.fields import RichTextUploadingField
 from django.utils.translation import gettext_lazy as _
 
 
@@ -11,7 +11,7 @@ class Page(models.Model):
         max_length=255,
     )
 
-    content = RichTextField()
+    content = RichTextUploadingField()
 
     created_at = models.DateTimeField(
         verbose_name=_('Created at'),

@@ -258,6 +258,8 @@ NUMBER_OF_DAYS_BEFORE_EMERGENCY_CANCELLATION = 2
 # Static files (CSS, JavaScript, Images)
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media').replace('\\', '/') # 'data' is my media folder
+MEDIA_URL = '//localhost:8000/media/'
 
 try:
     from api_volontaria.local_settings import *

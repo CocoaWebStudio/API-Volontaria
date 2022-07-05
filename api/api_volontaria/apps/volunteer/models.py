@@ -12,6 +12,7 @@ from django.utils.translation import gettext_lazy as _
 from django.contrib.auth import get_user_model
 from dry_rest_permissions.generics import authenticated_users
 from api_volontaria.email import EmailAPI
+from ckeditor.fields import RichTextField
 
 
 User = get_user_model()
@@ -181,7 +182,7 @@ class Event(models.Model):
         on_delete=models.PROTECT,
     )
 
-    description = models.TextField(
+    description = RichTextField(
         verbose_name="Description",
     )
 
