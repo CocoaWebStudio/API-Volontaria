@@ -30,6 +30,12 @@ from api_volontaria.apps.position.urls import router as position_router
 from api_volontaria.apps.user.urls import router as user_router
 from api_volontaria.apps.user.urls import urlpatterns as user_urls
 
+admin.site.site_header = 'Tribe Pure Connexion Admin'
+admin.site.site_title = 'Tribe Pure Connexion Admin'
+admin.site.site_url = '//tribe.pureconnexion.org/'
+admin.site.index_title = 'Tribe'
+admin.empty_value_display = '**Empty**'
+
 
 class OptionalSlashDefaultRouter(DefaultRouter):
     """ Subclass of DefaultRouter to make the trailing slash optional """
@@ -62,4 +68,5 @@ urlpatterns = [
     ),
     path('', include(user_urls)),
     path('', include(router.urls)),  # includes router generated URL
+    path('api-auth/', include('rest_framework.urls'))
 ]
