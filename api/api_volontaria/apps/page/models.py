@@ -1,4 +1,5 @@
 from django.db import models
+from ckeditor.fields import RichTextField
 from django.utils.translation import gettext_lazy as _
 
 
@@ -10,10 +11,7 @@ class Page(models.Model):
         max_length=255,
     )
 
-    content = models.TextField(
-        verbose_name=_('Data'),
-        blank=True,
-    )
+    content = RichTextField()
 
     created_at = models.DateTimeField(
         verbose_name=_('Created at'),
