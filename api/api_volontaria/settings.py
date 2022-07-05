@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/2.0/ref/settings/
 """
 
 import os
+import socket
 from pathlib import Path
 from decouple import config, Csv
 from dj_database_url import parse as db_url
@@ -60,7 +61,8 @@ INSTALLED_APPS = [
     'api_volontaria.apps.position',
     'django_filters',
     'djmoney',
-    'ckeditor'
+    'ckeditor',
+    'ckeditor_uploader'
 ]
 
 MIDDLEWARE = [
@@ -77,6 +79,8 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'api_volontaria.urls'
+
+CKEDITOR_UPLOAD_PATH = "uploads/"
 
 SITE_ID = 1
 
@@ -215,14 +219,19 @@ ACTIVATION_TOKENS = {
     'MINUTES': 2880,
 }
 
-EMAIL_HOST = config('EMAIL_HOST', default='placeholder_key')
-EMAIL_PORT = config('EMAIL_PORT', default='placeholder_key')
-EMAIL_HOST_USER = config('EMAIL_HOST_USER', default='placeholder_key')
-EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD', default='placeholder_key')
-EMAIL_USE_TLS = config('EMAIL_USE_TLS', default='placeholder_key')
+EMAIL_HOST = socket.gethostbyname(config('EMAIL_HOST', default='smtp.gmail.com'))
+EMAIL_PORT = config('EMAIL_PORT', default='587')
+EMAIL_HOST_USER = config('EMAIL_HOST_USER', default='youremail@gmail.com')
+EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD', default='yourpassword')
+EMAIL_USE_TLS = config('EMAIL_USE_TLS', default=True)
+EMAIL_TIMEOUT = 120
+DEFAULT_FROM_EMAIL = 'Pure connexion <info@pureconnexion.org>'
 
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-DEFAULT_FROM_EMAIL = 'info@pureconnexion.org'
+ADMINS = (
+    ('Annie', 'info@pureconnexion.org'),
+)
+
+MANAGERS = ADMINS
 
 # User specific settings
 LOCAL_SETTINGS = {
@@ -248,9 +257,7 @@ NUMBER_OF_DAYS_BEFORE_EMERGENCY_CANCELLATION = 2
 
 # Static files (CSS, JavaScript, Images)
 STATIC_URL = '/static/'
-STATIC_ROOT = './static/'
-STATIC_DIR = os.path.join(BASE_DIR, 'static')
-STATICFILES_DIR = (os.path.join(BASE_DIR, "static"),)
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 try:
     from api_volontaria.local_settings import *
